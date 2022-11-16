@@ -20,13 +20,13 @@ By default, the block cursor persist after exiting neovim. One way to restore th
 
 When neovim is opened, vim's default cursor style is set.
 
-```
+```vim
 guicursor=n-v-c-sm:block,i-ci-ve:ver25,r-cr-o:hor20
 ```
 
 On the other hand, on exit the cursor is reset to the one before.
 
-```
+```vim
 guicursor=a:ver25-blinkon0
 ```
 
