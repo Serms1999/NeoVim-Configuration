@@ -11,7 +11,10 @@ This repository contains all the files needed to configure my personal neovim cu
 - [Features](#features)
     - [Cursor reset](#cursor-reset)
     - [Vim options](#vim-options)
+    - [Plugin manager](#plugin-manager)
+    - [Color scheme](#color-scheme)
 - [Usage](#usage)
+    - [Packer installation](#packer-installation)
 
 ## Features
 
@@ -67,12 +70,28 @@ set.hidden = true           -- Allow to have unwritten files to a file and
 
 ### Plugin manager
 
+To manage all the plugins I am going to use Packer plugin manager.
+
 ### Color scheme
 
+I am a big nord fan, for that reason I am going to use `onenord` colorscheme. This colorscheme combines the nord aesthetic with a higher contrast syntax highlighting. 
+Credits to: [`rmehri01/onenord.nvim`](https://github.com/rmehri01/onenord.nvim)
 ## Usage
 
-To try this configuration, all you have to do is execute the following command.
+To try this configuration, all you have to do is run the following command and install the plugin manager.
 
 ```zsh
 mkdir -p ~/.config/nvim && git clone https://github.com/Serms1999/NeoVim-Configuration.git ~/.config/nvim
 ```
+
+### Packer installation
+
+You can see a full guide of how to install and configure it [here](https://github.com/wbthomason/packer.nvim#quickstart).
+
+To summarize, to download it you only have to run:
+
+```zsh
+git clone --depth 1 https://github.com/wbthomason/packer.nvim ~/.local/share/nvim/site/pack/packer/start/packer.nvim
+```
+
+Lastly, you need to run `PackerSync` in neovim. This will download all the require plugins.
