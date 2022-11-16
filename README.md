@@ -65,6 +65,10 @@ set.hidden = true           -- Allow to have unwritten files to a file and
                             -- to write or undo those changes
 ```
 
+### Plugin manager
+
+### Color scheme
+
 ## Usage
 
 To try this configuration, all you have to do is execute the following command.
