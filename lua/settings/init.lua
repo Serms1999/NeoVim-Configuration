@@ -3,9 +3,9 @@ local set = vim.opt         -- Create alias for vim.opt
 set.expandtab = true        -- Use spaces instead of <Tab>
 set.smarttab = true         -- Use 'shiftwifth' when inserting <Tab>
 set.shiftwidth = 4          -- Number of spaces to use for (auto)indent
-set.tabstop = 4	            -- Number of spaces that <Tab> uses
+set.tabstop = 4             -- Number of spaces that <Tab> uses
 
-set.hlsearch = true	        -- Highlight matches with last search pattern
+set.hlsearch = true         -- Highlight matches with last search pattern
 set.incsearch = true        -- Highlight match while typing search pattern
 set.ignorecase = true       -- Ignore case in search patterns
 set.smartcase = true        -- No ignore case when pattern has uppercase
