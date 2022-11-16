@@ -6,6 +6,12 @@
 
 This repository contains all the files needed to configure my personal neovim customization.
 
+## Table of contents
+
+- [Features](#features)
+    - [Cursor reset](#cursor-reset)
+    - [Vim options](#vim-options)
+- Usage
 ## Features
 
 ### Cursor reset
@@ -62,6 +68,6 @@ set.hidden = true           -- Allow to have unwritten files to a file and
 
 To try this configuration, all you have to do is execute the following command.
 
-```
+```zsh
 mkdir -p ~/.config/nvim && git clone https://github.com/Serms1999/NeoVim-Configuration.git ~/.config/nvim
 ```
