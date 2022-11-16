@@ -11,7 +11,8 @@ This repository contains all the files needed to configure my personal neovim cu
 - [Features](#features)
     - [Cursor reset](#cursor-reset)
     - [Vim options](#vim-options)
-- Usage
+- [Usage](#usage)
+
 ## Features
 
 ### Cursor reset
