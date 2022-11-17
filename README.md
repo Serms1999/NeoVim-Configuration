@@ -76,6 +76,11 @@ To manage all the plugins I am going to use Packer plugin manager.
 
 I am a big nord fan, for that reason I am going to use `onenord` colorscheme. This colorscheme combines the nord aesthetic with a higher contrast syntax highlighting. 
 Credits to: [`rmehri01/onenord.nvim`](https://github.com/rmehri01/onenord.nvim)
+
+### NeovimTree
+
+This plugin adds a file explorer to neovim.
+
 ## Usage
 
 To try this configuration, all you have to do is run the following command and install the plugin manager.
