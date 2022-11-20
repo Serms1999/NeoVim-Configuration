@@ -75,11 +75,28 @@ To manage all the plugins I am going to use Packer plugin manager.
 ### Color scheme
 
 I am a big nord fan, for that reason I am going to use `onenord` colorscheme. This colorscheme combines the nord aesthetic with a higher contrast syntax highlighting. 
-Credits to: [`rmehri01/onenord.nvim`](https://github.com/rmehri01/onenord.nvim)
+Credits to: [`rmehri01/onenord.nvim`](https://github.com/rmehri01/onenord.nvim).
 
 ### NeovimTree
 
-This plugin adds a file explorer to neovim.
+This plugin adds a file explorer to neovim. It can be opened using `<Space> + e`.
+
+### Language servers
+
+Language servers facilitate features like go-to-definition, find-references, hover,
+completion, rename, format, refactor, etc., using semantic whole-project analysis.
+
+In my case, I have used the following servers which you can modify as much as you want ([`lua/mason-config/init.lua`](lua/mason-config/init.lua)).
+
+```lua
+-- Required servers
+servers = { 'bashls', 'clangd', 'cmake', 'dockerls', 'hls', 'jdtls',
+            'kotlin_language_server', 'ltex', 'pyright', 'sqls', 'sumneko_lua' }
+```
+> **Note**
+> You need to have `ghcup` installed to use `hls` (haskell)
+
+You can find a wide list [here](https://github.com/williamboman/mason-lspconfig.nvim#available-lsp-servers).
 
 ## Usage
 
@@ -88,6 +105,12 @@ To try this configuration, all you have to do is run the following command and i
 ```zsh
 mkdir -p ~/.config/nvim && git clone https://github.com/Serms1999/NeoVim-Configuration.git ~/.config/nvim
 ```
+
+### LSP servers
+
+If you want to customize the language servers that are going to be installed you must modify the var showed [here](#language-servers).
+
+After the installation, you can use `Mason` to see and manage servers.
 
 ### Packer installation
 
