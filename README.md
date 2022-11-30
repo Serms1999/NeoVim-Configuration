@@ -13,6 +13,8 @@ This repository contains all the files needed to configure my personal neovim cu
     - [Vim options](#vim-options)
     - [Plugin manager](#plugin-manager)
     - [Color scheme](#color-scheme)
+    - [NeovimTree](#neovimtree)
+    - [Language servers](#language-servers)
 - [Usage](#usage)
     - [Packer installation](#packer-installation)
 
