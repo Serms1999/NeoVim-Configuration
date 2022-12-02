@@ -8,6 +8,7 @@ This repository contains all the files needed to configure my personal neovim cu
 
 ## Table of contents
 
+- [Example images](#example-images)
 - [Features](#features)
     - [Cursor reset](#cursor-reset)
     - [Vim options](#vim-options)
@@ -18,6 +19,12 @@ This repository contains all the files needed to configure my personal neovim cu
     - [Treesitter](#treesitter)
 - [Usage](#usage)
     - [Packer installation](#packer-installation)
+
+## Example images
+
+Example with Lua          | Example with Python
+:------------------------:|:--------------------------:
+![](imgs/example_lua.png) | ![](imgs/example_pyton.png)
 
 ## Features
 
