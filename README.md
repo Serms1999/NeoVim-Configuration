@@ -15,6 +15,7 @@ This repository contains all the files needed to configure my personal neovim cu
     - [Color scheme](#color-scheme)
     - [NeovimTree](#neovimtree)
     - [Language servers](#language-servers)
+    - [Treesitter](#treesitter)
 - [Usage](#usage)
     - [Packer installation](#packer-installation)
 
@@ -81,7 +82,7 @@ Credits to: [`rmehri01/onenord.nvim`](https://github.com/rmehri01/onenord.nvim).
 
 ### NeovimTree
 
-This plugin adds a file explorer to neovim. It can be opened using `<Space> + e`.
+This plugin adds a file explorer to neovim. It can be opened using <kbd>Space</kbd> + <kbd>e</kbd>.
 
 ### Language servers
 
@@ -99,6 +100,10 @@ servers = { 'bashls', 'clangd', 'cmake', 'dockerls', 'hls', 'jdtls',
 > You need to have `ghcup` installed to use `hls` (haskell)
 
 You can find a wide list [here](https://github.com/williamboman/mason-lspconfig.nvim#available-lsp-servers).
+
+### Treesitter
+
+Treesitter improves syntax highlighting. It also gives us the ability to refactor code as well as navigate throw definitions and usages of variables or functions. 
 
 ## Usage
 

@@ -7,5 +7,6 @@ require('mappings')
 require('mason-config')
 require('lsp-config.language-servers')
 require('lsp-config.nvim-cmp')
+require('treesitter-config')
 -- Close NvimTree if there is no other window
 require('nvim-tree-config.autoclose')
