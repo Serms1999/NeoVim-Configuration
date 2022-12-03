@@ -101,7 +101,7 @@ In my case, I have used the following servers which you can modify as much as yo
 ```lua
 -- Required servers
 servers = { 'bashls', 'clangd', 'cmake', 'dockerls', 'hls', 'jdtls',
-            'kotlin_language_server', 'ltex', 'pyright', 'sqls', 'sumneko_lua' }
+            'kotlin_language_server', 'ltex', 'pyright', 'sqlls', 'sumneko_lua' }
 ```
 > **Note**
 > You need to have `ghcup` installed to use `hls` (haskell)

@@ -62,7 +62,7 @@ require("mason").setup({
 
 -- Required servers
 servers = { 'bashls', 'clangd', 'cmake', 'dockerls', 'hls', 'jdtls',
-            'kotlin_language_server', 'ltex', 'pyright', 'sqls', 'sumneko_lua' }
+            'kotlin_language_server', 'ltex', 'pyright', 'sqlls', 'sumneko_lua' }
 
 require("mason-lspconfig").setup({
     ensure_installed = servers,
