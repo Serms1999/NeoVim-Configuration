@@ -114,6 +114,9 @@ Treesitter improves syntax highlighting. It also gives us the ability to refacto
 
 ## Usage
 
+> **Warning**
+It's necessary to have a terminal emulator compatible with true colors to use this configuration. You can remove the colorscheme config if you still want to use the rest of this configuration.
+
 To try this configuration, all you have to do is run the following command and install the plugin manager.
 
 ```zsh
