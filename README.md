@@ -96,15 +96,12 @@ This plugin adds a file explorer to neovim. It can be opened using <kbd>Space</k
 Language servers facilitate features like go-to-definition, find-references, hover,
 completion, rename, format, refactor, etc., using semantic whole-project analysis.
 
-In my case, I have used the following servers which you can modify as much as you want ([`lua/mason-config/init.lua`](lua/mason-config/init.lua)).
+In my case, I have defined no servers but you can add as much as you want ([`lua/mason-config/init.lua`](lua/mason-config/init.lua)).
 
 ```lua
 -- Required servers
-servers = { 'bashls', 'clangd', 'cmake', 'dockerls', 'hls', 'jdtls',
-            'kotlin_language_server', 'ltex', 'pyright', 'sqlls', 'sumneko_lua' }
+servers = { --[[ Set here the servers --]] }
 ```
-> **Note**
-> You need to have `ghcup` installed to use `hls` (haskell)
 
 You can find a wide list [here](https://github.com/williamboman/mason-lspconfig.nvim#available-lsp-servers).
 
@@ -120,7 +117,7 @@ It's necessary to have a terminal emulator compatible with true colors to use th
 To try this configuration, all you have to do is run the following command and install the plugin manager.
 
 ```zsh
-mkdir -p ~/.config/nvim && git clone https://github.com/Serms1999/NeoVim-Configuration.git ~/.config/nvim
+mkdir -p ${XDG_CONFIG_HOME:-$HOME/.config}/nvim && git clone https://github.com/Serms1999/NeoVim-Configuration.git ${XDG_CONFIG_HOME:-$HOME/.config}/nvim
 ```
 
 ### LSP servers
@@ -136,7 +133,7 @@ You can see a full guide of how to install and configure it [here](https://githu
 To summarize, to download it you only have to run:
 
 ```zsh
-git clone --depth 1 https://github.com/wbthomason/packer.nvim ~/.local/share/nvim/site/pack/packer/start/packer.nvim
+git clone --depth 1 https://github.com/wbthomason/packer.nvim ${XDG_DATA_HOME:-$HOME/.local/share}/nvim/site/pack/packer/start/packer.nvim
 ```
 
 Lastly, you need to run `PackerSync` in neovim. This will download all the require plugins.

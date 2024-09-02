@@ -20,7 +20,7 @@ set.termguicolors = true    -- Enable 24-bit colors and uses "gui" attributes
 set.number = true           -- Enable line numbers
 set.cursorline = true       -- Highlight current line
 
-set.background = 'dark'     -- Change highlight colors depending on terminal 
+--set.background = 'dark'     -- Change highlight colors depending on terminal 
                             -- background
 set.hidden = true           -- Allow to have unwritten files to a file and 
                             -- open a new file using :e without being forced
