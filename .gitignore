@@ -159,5 +159,9 @@ $RECYCLE.BIN/
 
 # End of https://www.toptal.com/developers/gitignore/api/visualstudiocode,vim,lua,macos,linux,windows
 
-# Packer compiled files
-plugin/
+# Neovim runtime artifacts
+nvim.log
+
+# vim.pack downloaded plugins live in ~/.local/share/nvim, not in this repo,
+# so nothing related to them needs to be ignored here. The lockfile
+# (nvim-pack-lock.json) MUST be committed to keep machines in sync.
