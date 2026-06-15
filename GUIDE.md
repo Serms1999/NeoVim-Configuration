@@ -1,4 +1,4 @@
-# Quick guide to this Neovim setup
+# Quick guide to this Neovim setup 
 
 How to use the stack (`vim.pack`, Mason, native LSP, conform, lint, blink.cmp, fzf-lua, etc.) and which files to edit when you want to change something.
 
