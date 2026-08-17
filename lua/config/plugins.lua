@@ -13,6 +13,9 @@ vim.pack.add({
     -- File explorer
     { src = 'https://github.com/nvim-tree/nvim-tree.lua' },
 
+    -- LSP server definitions
+    { src = 'https://github.com/neovim/nvim-lspconfig' },
+
     -- Completion
     { src = 'https://github.com/saghen/blink.cmp', version = vim.version.range('1.0') },
 
