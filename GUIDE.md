@@ -1,194 +1,275 @@
 # Quick guide to this Neovim setup
 
-How to use the stack (`vim.pack`, Mason, native LSP, conform, lint, blink.cmp, fzf-lua, etc.) and which files to edit when you want to change something.
+How the stack works and which file to edit when you want to change something.
 
-**Leader:** `<Space>`.
+**Leader:** `<Space>`. Full keymap reference: `:h cheatsheet`.
 
 ---
 
 ## 1. Where everything lives
 
-| What you want to change | Usual file |
-|-------------------------|------------|
+| What you want to change | File |
+|-------------------------|------|
 | Global keymaps | [`lua/config/keymaps.lua`](lua/config/keymaps.lua) |
-| Editor options (tabs, clipboard, etc.) | [`lua/config/options.lua`](lua/config/options.lua) |
-| **Which languages you use and which tools** | [`lua/config/languages.lua`](lua/config/languages.lua) |
-| Plugin list (Git URLs) + theme/treesitter/UI bootstrap | [`lua/config/plugins.lua`](lua/config/plugins.lua) |
-| Mason, default LSP, conform, lint, binary install | [`lua/config/lsp.lua`](lua/config/lsp.lua) |
-| Fine-grained settings for a **specific LSP server** | [`lsp/<server_name>.lua`](lsp/) (Neovim 0.11+ convention) |
-| Autocommands (cursor, NvimTree close, etc.) | [`lua/config/autocmds.lua`](lua/config/autocmds.lua) |
+| Editor options | [`lua/config/options.lua`](lua/config/options.lua) |
+| **Languages and their LSP** | [`lua/config/languages.lua`](lua/config/languages.lua) |
+| Plugin list, colorscheme, treesitter, UI | [`lua/config/plugins.lua`](lua/config/plugins.lua) |
+| LSP wiring, diagnostics, LSP keymaps | [`lua/config/lsp.lua`](lua/config/lsp.lua) |
+| Settings for one LSP server | [`lsp/<server>.lua`](lsp/) |
+| Autocommands | [`lua/config/autocmds.lua`](lua/config/autocmds.lua) |
+| Keymap cheatsheet | [`doc/cheatsheet.txt`](doc/) |
 
-The **central table** is `languages.lua`: there you define LSP candidates, formatters, linters, filetypes, and Tree-sitter parsers.
-
----
-
-## 2. Useful shortcuts (summary)
-
-### General and windows
-
-- `<leader>w` — write buffer  
-- `<leader>q` — close window  
-- `<leader>Q` — quit all (force)  
-- `<Esc>` (Normal mode) — clear search highlight  
-- `<C-h>` `<C-j>` `<C-k>` `<C-l>` — move focus between windows (same as `Ctrl-w` + direction)
-
-### Buffers
-
-- `[b` / `]b` — previous / next buffer  
-- `<leader>bd` — delete current buffer  
-
-### Diagnostics
-
-- `[d` / `]d` — previous / next diagnostic  
-- `<leader>dl` — diagnostic in a float  
-- `<leader>dq` — send diagnostics to the location list  
-
-### Explorer and search (fzf-lua)
-
-- `<leader>e` — toggle **NvimTree**  
-- `<leader>ff` — find files  
-- `<leader>fg` — live grep  
-- `<leader>fb` — buffers  
-- `<leader>fh` — help tags (`:help`)  
-- `<leader>fr` — recent files  
-- `<leader>fd` — workspace diagnostics  
-- `<leader>fs` / `<leader>fS` — document / workspace symbols  
-
-*(If `fzf` is installed on the system, fzf-lua is usually snappier.)*
-
-### Built-in terminal
-
-- `<C-\><C-n>` or `Esc` `Esc` — return to Normal mode from terminal mode  
-
-### With **LSP active** in the buffer (set in `LspAttach`)
-
-- `gd` — go to definition  
-- `gD` — declaration  
-- `gi` — implementations  
-- `gr` — references  
-- `K` — hover documentation  
-- `<C-k>` — signature help  
-- `<leader>D` — type definition  
-- `<leader>rn` — rename symbol  
-- `<leader>ca` — code actions  
-- `<leader>f` — format buffer (conform + LSP fallback)
-
-**Which-key:** after pausing on `<leader>` (or per `:help which-key`), you can see groups and described mappings.
+[`lua/config/languages.lua`](lua/config/languages.lua) is the single source of
+truth. Each entry declares, per language, its ordered LSP candidates, its
+filetypes and its tree-sitter parsers. Both `lsp.lua` and the treesitter setup
+derive their configuration from that table, so adding a language is a single
+edit.
 
 ---
 
-## 3. Completion and snippets (blink.cmp + LuaSnip)
+## 2. The LSP pipeline
 
-- Config uses blink’s **`default` preset** (Tab/Shift-Tab, Enter, etc.).  
-- For exact behavior: `:help blink-cmp` or the `require('blink.cmp').setup({...})` call in [`lua/config/plugins.lua`](lua/config/plugins.lua).
+1. You install the server binary with your system package manager.
+2. `languages.lua` declares ordered candidates per language.
+3. `lsp.lua` enables the **first candidate whose binary is on `PATH`**
+   (`vim.fn.executable`).
+4. `nvim-lspconfig` supplies how to launch it: `cmd`, `filetypes`,
+   `root_markers`.
+5. `lsp/<server>.lua` adds or overrides `settings` for that server, and takes
+   precedence over the lspconfig definition.
+6. `vim.lsp.enable()` activates the resulting list.
+
+Binary names sometimes differ from server names (`lua_ls` →
+`lua-language-server`). That mapping is the `EXECUTABLE` table in
+[`lua/config/lsp.lua`](lua/config/lsp.lua). When binary and server share a name
+(`ty`, `clangd`, `sqls`), no entry is needed.
+
+A missing binary is not an error: that server stays inactive and everything
+else keeps working. Verify with `:echo executable('name')` and
+`:checkhealth lsp`.
+
+Diagnostics presentation and the buffer-local LSP keymaps (`gd`, `gr`, `K`,
+`<leader>rn`, `<leader>ca`…) are set in `lsp.lua`, the keymaps inside an
+`LspAttach` autocommand so they only exist where a server is attached.
 
 ---
 
-## 4. Format on save (conform.nvim)
+## 3. Add a language
 
-By default, buffers are formatted **on save** according to `languages.lua`.
-
-- `:FormatDisable` — disable auto-format on save everywhere  
-- `:FormatDisable!` — only for the current buffer  
-- `:FormatEnable` — turn format-on-save back on  
-
----
-
-## 5. Mason (LSP, linters, formatters binaries)
-
-- `:Mason` — UI to install / update / remove packages  
-- After editing `languages.lua`, **restart Neovim**; `mason-tool-installer` will try to install missing tools (slightly delayed at startup).
-
-If a formatter/linter name differs from the Mason package name (e.g. `ruff_format` → package `ruff`), see **`lua/config/lsp.lua`** (`MASON_ALIAS`). Extend that table if Mason cannot find the package.
-
----
-
-## 6. How to **add** support for a new language
-
-1. Open [`lua/config/languages.lua`](lua/config/languages.lua).  
-2. Add an entry, for example:
+1. Install the server binary.
+2. Add an entry to `languages.lua`:
 
    ```lua
    rust = {
        lsp = { 'rust_analyzer' },
-       formatters = { 'rustfmt' },
-       linters = { 'clippy' },  -- optional; must exist for nvim-lint + Mason
        filetypes = { 'rust' },
        treesitter = { 'rust' },
    },
    ```
 
-3. **LSP server names** must match nvim-lspconfig / Mason (e.g. `rust_analyzer`, `lua_ls`). See Mason docs and `:help lspconfig-all`.
+3. If the binary name differs from the server name, add it to `EXECUTABLE` in
+   `lsp.lua`.
+4. Install the parser: `:TSInstall rust`.
+5. Restart Neovim, open a `.rs` file, check `:checkhealth lsp`.
 
-4. Optional: add [`lsp/rust_analyzer.lua`](lsp/) with `return { settings = { ... } }` if you need server-specific options.
+Server names must match `nvim-lspconfig`. Use `lsp = {}` for a language you
+only want highlighted.
 
-5. Restart Neovim. Check `:Mason` and `:LspInfo` on a `.rs` file.
+Optionally create `lsp/rust_analyzer.lua` returning `{ settings = { ... } }`
+for server-specific options.
 
 ---
 
-## 7. How to **switch LSP** without rewriting the whole config
+## 4. Switch or prefer a different LSP
 
-In `languages.lua`, the `lsp` list is **preference-ordered**. The **first** candidate Mason can install wins.
-
-Python example (current setup):
+The `lsp` list is preference-ordered and the first candidate with an available
+binary wins, so switching is a reorder:
 
 ```lua
-lsp = { 'basedpyright', 'pyright', 'pylsp' },
+python = { lsp = { 'basedpyright', 'ty' }, ... }
 ```
 
-To prefer Pyright over Basedpyright, reorder:
+Per-server files coexist; only the active server's settings apply. Installing
+or removing a binary switches servers too, with no config change.
+
+### Python
+
+`ty` (Astral's Rust type checker and language server) is first, with
+`basedpyright` as fallback. [`lsp/ty.lua`](lsp/) carries its `cmd`,
+`filetypes` and `root_markers`; the others only carry `settings`.
+
+Install with `uv tool install ty`.
+
+### SQL
+
+`sqls` is first, `sqlls` as fallback. Install `sqls` with a pinned version on
+every machine:
+
+```bash
+go install github.com/sqls-server/sqls@<version>
+```
+
+`sqls` autocompletes real table and column names when connected to a database.
+Without a connection it logs `no database connection` on startup and keeps
+serving generic SQL, which is what this setup uses it for. To connect it, add a
+`settings.sqls.connections` block in `lsp/sqls.lua` — keep credentials out of
+the repo.
+
+---
+
+## 5. Completion
+
+blink.cmp, configured in [`lua/config/plugins.lua`](lua/config/plugins.lua)
+with the `default` preset. Sources: `lsp`, `path`, `buffer`. LSP capabilities
+are extended with blink's in `lsp.lua`, so servers know what the client
+supports.
+
+Key behaviour: `:h blink-cmp`.
+
+`nvim-autopairs` closes brackets and quotes as you type.
+
+---
+
+## 6. Colorscheme
+
+**nordern** is active, with Aurora accents on the SQL and Python tokens that
+matter most:
 
 ```lua
-lsp = { 'pyright', 'basedpyright', 'pylsp' },
+require('nordern').setup({ transparent = true, italic_comments = false })
+vim.cmd.colorscheme('nordern')
+
+local set = vim.api.nvim_set_hl
+set(0, '@keyword.sql', { fg = '#B48EAD' })
+-- ...
 ```
 
-[`lsp/pyright.lua`](lsp/pyright.lua) and [`lsp/basedpyright.lua`](lsp/basedpyright.lua) can coexist; only the active server’s settings apply.
+Loading a colorscheme resets every highlight group, so `nvim_set_hl` calls
+belong **after** `vim.cmd.colorscheme(...)`. Placed before, they are discarded
+silently.
 
-### SQL (`sqls` vs `sqlls`)
+`onenord` is installed with its setup block commented out as an alternative. To
+switch, comment the nordern block, uncomment onenord, and update `lualine`'s
+`theme` to match.
 
-The Mason package **`sqls`** (Go server) often fails to install. In `languages.lua` the SQL list prefers **`sqlls`** and keeps `sqls` as fallback. After changing the config, restart Neovim; if Mason still tries `sqls`, open `:Mason`, uninstall `sqls` with `X`, and install `sqlls` with `i` if needed. If you want no SQL LSP (highlighting + formatting only), set `lsp = {}` on the `sql` entry.
-
----
-
-## 8. How to **remove** a language or tool
-
-- Delete or comment out the block in **`languages.lua`** (or clear the lists).  
-- To **stop loading** a whole plugin, remove its `vim.pack.add({...})` line in **`lua/config/plugins.lua`** and remove its `require(...).setup(...)` in that file if any.  
-- Update plugins and the lockfile: `:lua vim.pack.update()` (or restart).  
-- Commit **`nvim-pack-lock.json`** if you want the same state on another machine.
+`:Inspect` shows the highlight groups under the cursor — use it before writing
+an override, since capture names differ per language.
 
 ---
 
-## 9. Adding or removing **plugins**
+## 7. Treesitter
 
-1. Edit **`lua/config/plugins.lua`**: add e.g.  
-   `{ src = 'https://github.com/user/repo' }`  
-2. If the plugin needs configuration, add `require('...').setup({})` below `vim.pack.add` in the same file (or a new module and `require` it).  
-3. Restart Neovim the first time (or let `vim.pack` install).  
-4. Optional: pin with `version = 'v1.2.3'` or `version = vim.version.range('2')` (see `:help vim.pack`).
+Parsers come from `ensure_installed`, derived from the `treesitter` field of
+every entry in `languages.lua`. `auto_install` is off, so the installed set is
+exactly what the registry declares — the same on every machine. Install a new
+one with `:TSInstall <parser>` and check status with `:TSInstallInfo`.
 
-To **remove** a plugin: delete its entry from `vim.pack.add`, restart, and optionally remove from disk: `:lua vim.pack.del({ 'plugin-folder-name' })` (folder name under `pack/core/opt`; see `:lua vim.inspect(vim.pack.get())`).
+Enabled modules: `highlight`, `indent`, `incremental_selection` (`<C-space>` to
+grow, `<bs>` to shrink) and `textobjects` (`af`/`if` for functions, `ac`/`ic`
+for classes, `]f`/`[f` and `]c`/`[c` to jump).
+
+The `latex` grammar needs the external `tree-sitter` CLI, so it is left out of
+the registry; TeX files use classic syntax highlighting.
 
 ---
 
-## 10. Maintenance commands
+## 8. Comments and cursor
+
+Comments use the built-in `gc` / `gcc`.
+
+The cursor is Neovim's default: block in normal mode, bar in insert. Nothing in
+this config sets `guicursor`. Terminal cursor behaviour after quitting belongs
+to the terminal config (Ghostty: `cursor-style = bar`,
+`cursor-style-blink = true`).
+
+---
+
+## 9. Add or remove a plugin
+
+**Add:**
+
+1. Add `{ src = 'https://github.com/user/repo' }` to `vim.pack.add({...})` in
+   `plugins.lua`.
+2. Add its `require('...').setup({})` below, if it needs one.
+3. Restart Neovim.
+4. Optional pinning: `version = 'v1.2.3'` or
+   `version = vim.version.range('1.0')` (`:h vim.pack`).
+5. Commit the lockfile.
+
+**Remove:**
+
+1. Remove its entry from `vim.pack.add` and its `setup()` call.
+2. Delete it from disk. `vim.pack` keeps plugins that are no longer declared,
+   and anything left there is re-added to the lockfile on the next startup:
+
+   ```vim
+   :lua vim.pack.del({ 'plugin-folder-name' })
+   ```
+
+   Folder names: `ls ~/.local/share/nvim/site/pack/core/opt` or
+   `:lua vim.inspect(vim.pack.get())`.
+
+3. Restart and commit the lockfile.
+
+---
+
+## 10. Keeping machines in sync
+
+`nvim-pack-lock.json` pins exact plugin revisions, so it is what keeps every
+machine identical.
+
+1. Commit it after every `:lua vim.pack.update()`.
+2. Pull it on the other machines before opening Neovim.
+3. Pin binary versions where the package manager allows it.
+
+If the lockfile gains entries you did not declare, the matching pluginAquí va la continuación desde donde se cortó:
+
+```markdown
+If the lockfile gains entries you did not declare, the matching plugin is still
+on disk. Remove it (section 9), then regenerate:
+
+```bash
+rm nvim-pack-lock.json   # restart Neovim, then commit the result
+```
+
+---
+
+## 11. Maintenance commands
 
 | Command | Purpose |
 |---------|---------|
-| `:checkhealth` | Plugin and environment health |
-| `:lua vim.pack.update()` | Update `vim.pack`-managed plugins |
-| `:TSInstall <parser>` | Install a single Tree-sitter parser if needed |
-| `:LspInfo` | Active LSP clients for the buffer |
+| `:checkhealth` | Environment and plugin health |
+| `:checkhealth lsp` | Enabled configurations and active clients |
+| `:lua vim.pack.update()` | Update plugins |
+| `:TSInstall <parser>` | Install a tree-sitter parser |
+| `:TSInstallInfo` | Parser status (takes no arguments) |
+| `:Inspect` | Highlight groups under the cursor |
+| `:h cheatsheet` | Keymap reference |
 
 ---
 
-## 11. If something breaks
+## 12. Troubleshooting
 
-1. `:messages` — recent Lua errors.  
-2. `:checkhealth` — mason, treesitter, lspconfig, blink, conform sections.  
-3. Check that the **server name** in `lsp = { ... }` exists in Mason for your OS.  
-4. Check **aliases** in `lsp.lua` if mason-tool-installer errors (“Cannot find package …”).
+**Lua errors on startup** — `:messages`. A `module 'x' not found` means a
+`require` outlived the plugin it referenced.
+
+**LSP not attaching** — `:checkhealth lsp`:
+
+- Listed under *Enabled configurations* with *"config not found"*:
+  `nvim-lspconfig` has no definition for that server. Write `lsp/<server>.lua`
+  with `cmd`, `filetypes` and `root_markers`.
+- Not listed at all: the binary is not on `PATH`. Check with
+  `:echo executable('name')`.
+- The shell finds the binary but Neovim does not: `PATH` inheritance. Neovim
+  uses the `PATH` of the process that launched it, so define `PATH` in
+  `.zshenv` (always sourced) rather than `.zprofile` (login shells only).
+
+**Highlight overrides have no effect** — they must run after
+`vim.cmd.colorscheme(...)`. Confirm the real capture name with `:Inspect`.
+
+**Warnings about plugins that are not in `plugins.lua`** — they are still on
+disk. See section 9.
 
 ---
 
-For a fresh install and high-level repo overview, see [`README.md`](README.md).
+For installation and dependencies, see [`README.md`](README.md).

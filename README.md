@@ -1,92 +1,155 @@
 # Neovim configuration
 
-Personal Neovim config for macOS/Linux. Targets **Neovim 0.12+** with the built-in plugin manager (`vim.pack`), native LSP configuration (`vim.lsp.config` / `vim.lsp.enable`), and Mason for binaries.
+Personal Neovim config for macOS and Linux. Minimal by design: a comfortable
+editor for scripts and quick edits.
+
+Built on **Neovim 0.12+** with the built-in plugin manager (`vim.pack`) and
+native LSP (`vim.lsp.config` / `vim.lsp.enable`). Language server binaries come
+from the system package manager, which keeps versions under your control and
+identical across machines.
 
 ## Requirements
 
 - **Neovim** >= 0.12 (`nvim -v`)
-- **Git** (`vim.pack` clones plugins)
-- **True-color terminal** (most modern terminals; `termguicolors` is enabled)
-- **Optional**: [`fzf`](https://github.com/junegunn/fzf) on `PATH` for the best `fzf-lua` experience (falls back gracefully if missing)
+- **Git** — `vim.pack` clones plugins
+- A **true-color terminal** (`termguicolors` is enabled)
+- A **Nerd Font** in the terminal, for the icons in nvim-tree and lualine
+- The system binaries listed below, for the languages you care about
 
-## Quick start
+## Install
 
-1. Clone into your config path (or use this repo directly):
-
-   ```bash
-   git clone https://github.com/Serms1999/NeoVim-Configuration.git "${XDG_CONFIG_HOME:-$HOME/.config}/nvim"
-   ```
-
-2. Start Neovim once. On first launch, `vim.pack` installs every plugin listed in [`lua/config/plugins.lua`](lua/config/plugins.lua). Restart if prompted.
-
-3. The lockfile [`nvim-pack-lock.json`](nvim-pack-lock.json) pins exact revisions—commit it so every machine gets the same plugin state.
-
-4. After plugins load, **Mason** installs language servers and tools in the background. Open `:Mason` to watch progress or install extras.
-
-## Architecture
-
-| Concern | File / location |
-|--------|------------------|
-| Entry point | [`init.lua`](init.lua) |
-| Options, plugins, LSP, keymaps | [`lua/config/`](lua/config/) |
-| **Which language → which tools** | [`lua/config/languages.lua`](lua/config/languages.lua) — edit this to add or change stacks |
-| Per-server LSP overrides | [`lsp/<server>.lua`](lsp/) (Neovim 0.11+ convention) |
-| Plugin URLs + UI plugin setup | [`lua/config/plugins.lua`](lua/config/plugins.lua) |
-| Mason, `vim.lsp.config`, conform, lint | [`lua/config/lsp.lua`](lua/config/lsp.lua) |
-
-### Generic LSP selection (no hard-coded server names in logic)
-
-[`lua/config/languages.lua`](lua/config/languages.lua) lists **ordered candidates** per language, e.g. Python:
-
-```lua
-lsp = { 'basedpyright', 'pyright', 'pylsp' },
+```bash
+git clone https://github.com/Serms1999/NeoVim-Configuration.git \
+  "${XDG_CONFIG_HOME:-$HOME/.config}/nvim"
 ```
 
-At startup, the first name that Mason can install wins. To prefer **Pyright** over **Basedpyright**, swap the order—no other file needs to change. Optional per-server settings still live in [`lsp/pyright.lua`](lsp/pyright.lua) and [`lsp/basedpyright.lua`](lsp/basedpyright.lua); unused configs are harmless.
+Start Neovim. `vim.pack` installs every plugin declared in
+[`lua/config/plugins.lua`](lua/config/plugins.lua) and pins them in
+[`nvim-pack-lock.json`](nvim-pack-lock.json) — commit that file so every machine
+lands on the same revisions.
 
-Formatter/linter names occasionally differ from Mason package names. Aliases are mapped in [`lua/config/lsp.lua`](lua/config/lsp.lua) (`MASON_ALIAS`, e.g. `ruff_format` → `ruff`).
+Then install the binaries for the languages you use. A missing binary is not an
+error: that language server simply stays inactive.
 
-### Plugins (summary)
+## System dependencies
 
-- **Manager**: `vim.pack` (built-in), lockfile: `nvim-pack-lock.json`
-- **UI**: onenord, lualine, gitsigns, which-key, indent-blankline
-- **Explorer**: nvim-tree (`<leader>e`)
-- **Picker**: fzf-lua (`<leader>f…`)
-- **LSP**: nvim-lspconfig + Mason + mason-lspconfig + mason-tool-installer
-- **Completion**: blink.cmp + LuaSnip
-- **Format / lint**: conform.nvim + nvim-lint
-- **Treesitter**: nvim-treesitter + textobjects (parser list derived from `languages.lua`)
+Neovim uses these binaries; it never installs them.
 
-### LaTeX tree-sitter
+### Arch Linux
 
-The `latex` grammar often requires the external **tree-sitter** CLI. This config therefore does **not** auto-install the LaTeX parser; TeX files use classic syntax highlighting until you install the CLI and add `latex` back under `treesitter` in `languages.lua`.
+```bash
+sudo pacman -S --needed neovim git fzf ripgrep fd \
+  lua-language-server bash-language-server clang go
+paru -S basedpyright        # AUR
+```
+
+### macOS
+
+```bash
+brew install neovim git fzf ripgrep fd \
+  lua-language-server bash-language-server llvm go basedpyright
+```
+
+`clangd` ships inside `llvm`. Homebrew does not link it by default, so you may
+need `$(brew --prefix llvm)/bin` on your `PATH`.
+
+### Both platforms
+
+```bash
+uv tool install ty                                  # Python LSP
+go install github.com/sqls-server/sqls@<version>    # SQL LSP
+```
+
+Both land outside the system package manager, so make sure `$UV_BIN_DIR` (or
+wherever `uv` places tools) and `$GOBIN` are on your `PATH`.
+
+Neovim inherits the `PATH` of the process that starts it. Define it in
+`.zshenv`, which is always sourced, rather than `.zprofile`, which only runs for
+login shells — otherwise a server may be visible in the shell but not inside
+Neovim.
+
+### Optional
+
+- `chafa` — image previews in the fzf-lua picker
+
+## Layout
+
+| Concern | Location |
+|---------|----------|
+| Entry point | [`init.lua`](init.lua) |
+| Options, plugins, LSP, keymaps, autocommands | [`lua/config/`](lua/config/) |
+| **Languages and their LSP** | [`lua/config/languages.lua`](lua/config/languages.lua) |
+| LSP wiring and diagnostics | [`lua/config/lsp.lua`](lua/config/lsp.lua) |
+| Plugin list and plugin setup | [`lua/config/plugins.lua`](lua/config/plugins.lua) |
+| Per-server LSP settings | [`lsp/<server>.lua`](lsp/) |
+| Keymap reference | [`doc/cheatsheet.txt`](doc/) → `:h cheatsheet` |
+
+### Language registry
+
+[`lua/config/languages.lua`](lua/config/languages.lua) is the single source of
+truth. Each language declares ordered LSP candidates, its filetypes and its
+tree-sitter parsers:
+
+```lua
+python = {
+    lsp = { 'ty', 'basedpyright' },
+    filetypes = { 'python' },
+    treesitter = { 'python' },
+},
+```
+
+At startup, `lsp.lua` walks each candidate list and enables the **first server
+whose binary is on `PATH`**. Reorder the list to change preference, or install a
+different binary — nothing else needs editing.
+
+`nvim-lspconfig` provides the launch details for each server (`cmd`,
+`filetypes`, `root_markers`). Files under [`lsp/`](lsp/) add per-server
+`settings` on top of that.
+
+### Plugins
+
+| Purpose | Plugin |
+|---------|--------|
+| Manager | `vim.pack` (built-in) |
+| Colorscheme | nordern, with onenord available as an alternative |
+| LSP definitions | nvim-lspconfig |
+| Completion | blink.cmp |
+| Syntax and textobjects | nvim-treesitter, nvim-treesitter-textobjects |
+| File explorer | nvim-tree |
+| Picker | fzf-lua |
+| Statusline | lualine |
+| Brackets | nvim-autopairs |
+| Icons | nvim-web-devicons |
 
 ## Maintenance
 
-Update plugins (review the confirmation buffer that `vim.pack` may open):
-
 ```vim
-:lua vim.pack.update()
+:lua vim.pack.update()   " update plugins, then commit the lockfile
+:checkhealth             " environment and plugin health
+:checkhealth lsp         " enabled configurations and active clients
+:h cheatsheet            " keymap reference
 ```
 
-Health checks:
+Commit `nvim-pack-lock.json` after every update and pull it on the other
+machines; that is what keeps them from drifting apart.
 
-```vim
-:checkhealth
-```
+## Keymaps
 
-## Keyboard (basics)
+Leader is `<Space>`. Full reference: `:h cheatsheet`.
 
 | Keys | Action |
 |------|--------|
-| `<leader>` | Space |
 | `<leader>e` | Toggle file tree |
-| `<leader>ff` | Find files |
-| `<leader>fg` | Live grep |
-| `<leader>w` / `<leader>q` | Save / quit window |
+| `<leader>ff` / `<leader>fg` | Find files / live grep |
+| `<leader>w` / `<leader>q` | Write / quit window |
+| `gd` / `K` / `gr` | Definition / hover / references |
 | `[d` / `]d` | Previous / next diagnostic |
-| `gd` / `K` | Go to definition / hover (LSP buffers) |
-| `<leader>f` | Format buffer (conform + LSP fallback) |
+| `gcc` | Toggle comment |
+
+## Further reading
+
+[`GUIDE.md`](GUIDE.md) covers how to add languages, switch LSP servers, manage
+plugins and troubleshoot.
 
 ## License
 
