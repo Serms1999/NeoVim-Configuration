@@ -3,22 +3,6 @@ local augroup = function(name)
 end
 
 ------------------------------------------------------------
--- Restore terminal cursor shape on exit, set block cursor on entry.
--- Without this, the block cursor can persist after exiting Neovim
--- in some terminal emulators.
-------------------------------------------------------------
-vim.api.nvim_create_autocmd({ 'VimEnter', 'VimResume' }, {
-    group = augroup('cursor_reset'),
-    pattern = '*',
-    command = 'set guicursor=n-v-c-sm:block,i-ci-ve:ver25,r-cr-o:hor20',
-})
-vim.api.nvim_create_autocmd({ 'VimLeave', 'VimSuspend' }, {
-    group = augroup('cursor_reset'),
-    pattern = '*',
-    command = 'set guicursor=a:ver25-blinkon0',
-})
-
-------------------------------------------------------------
 -- Highlight yanked text briefly.
 ------------------------------------------------------------
 vim.api.nvim_create_autocmd('TextYankPost', {

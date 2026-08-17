@@ -1,0 +1,87 @@
+*cheatsheet.txt*  Personal Neovim keymap reference
+
+Leader = <Space>
+
+==============================================================================
+GENERAL                                                 *cheat-general*
+
+<leader>w       Write buffer
+<leader>q       Quit window
+<leader>Q       Quit all (force)
+<Esc>           Clear search highlight
+
+==============================================================================
+WINDOWS AND BUFFERS                                     *cheat-windows*
+
+<C-h>           Window left
+<C-j>           Window down
+<C-k>           Window up (normal mode; see |cheat-lsp| for insert mode)
+<C-l>           Window right
+
+[b              Previous buffer
+]b              Next buffer
+<leader>bd      Delete buffer
+
+==============================================================================
+LSP                                                     *cheat-lsp*
+
+gd              Go to definition
+gD              Go to declaration
+gi              Go to implementation
+gr              References
+K               Hover documentation
+<C-k>           Signature help (insert mode)
+<leader>D       Type definition
+<leader>rn      Rename symbol
+<leader>ca      Code action (normal and visual)
+
+==============================================================================
+DIAGNOSTICS                                             *cheat-diagnostics*
+
+[d              Previous diagnostic
+]d              Next diagnostic
+<leader>dl      Line diagnostic float
+<leader>dq      Diagnostics to loclist
+
+==============================================================================
+PICKER (fzf-lua)                                        *cheat-fzf*
+
+<leader>ff      Find files
+<leader>fg      Live grep
+<leader>fb      Open buffers
+<leader>fh      Help tags
+<leader>fr      Recent files
+<leader>fd      Workspace diagnostics
+<leader>fs      Document symbols
+<leader>fS      Workspace symbols
+
+==============================================================================
+FILE EXPLORER                                           *cheat-tree*
+
+<leader>e       Toggle nvim-tree
+
+==============================================================================
+TREESITTER                                              *cheat-treesitter*
+
+<C-space>       Start / expand incremental selection
+<bs>            Shrink selection
+
+af / if         Select function (outer / inner)
+ac / ic         Select class (outer / inner)
+
+]f / [f         Next / previous function
+]c / [c         Next / previous class
+
+==============================================================================
+USEFUL BUILT-INS                                        *cheat-native*
+
+gcc             Toggle comment on line
+gc              Toggle comment on selection (visual)
+
+==============================================================================
+TERMINAL                                                *cheat-terminal*
+
+<C-\><C-n>      Leave terminal mode
+<Esc><Esc>      Leave terminal mode (alternative)
+
+ vim:tw=78:ts=8:ft=help:norl:

@@ -1,30 +1,22 @@
 -- Central language registry.
 -- Each entry maps a logical language name to:
---   lsp        : ordered list of LSP candidates (first available in mason wins)
---   formatters : list of formatters consumed by conform.nvim and mason-tool-installer
---   linters    : list of linters consumed by nvim-lint and mason-tool-installer
---   filetypes  : Neovim filetypes that map to this language (used by conform/lint)
+--   lsp        : ordered list of LSP candidates (first available on PATH wins)
+--   filetypes  : Neovim filetypes that map to this language
 --   treesitter : list of tree-sitter parsers to ensure installed
 --
--- To swap LSPs (e.g. switch from pyright to basedpyright), reorder the lsp list.
--- The rest of the configuration does not need to change.
 return {
     bash = {
         lsp = { 'bashls' },
-        formatters = { 'shfmt' },
-        linters = { 'shellcheck' },
         filetypes = { 'sh', 'bash' },
         treesitter = { 'bash' },
     },
     c = {
         lsp = { 'clangd' },
-        formatters = { 'clang_format' },
         filetypes = { 'c' },
         treesitter = { 'c' },
     },
     cpp = {
         lsp = { 'clangd' },
-        formatters = { 'clang_format' },
         filetypes = { 'cpp' },
         treesitter = { 'cpp' },
     },
@@ -35,7 +27,6 @@ return {
     },
     docker = {
         lsp = { 'dockerls' },
-        linters = { 'hadolint' },
         filetypes = { 'dockerfile' },
         treesitter = { 'dockerfile' },
     },
@@ -59,21 +50,21 @@ return {
     },
     lua = {
         lsp = { 'lua_ls' },
-        formatters = { 'stylua' },
         filetypes = { 'lua' },
         treesitter = { 'lua', 'luadoc' },
     },
+    markdown = {
+        lsp = {},
+        filetypes = { 'markdown' },
+        treesitter = { 'markdown', 'markdown_inline' },
+    },
     python = {
-        lsp = { 'basedpyright', 'pyright', 'pylsp' },
-        formatters = { 'ruff_format', 'black' },
-        linters = { 'ruff' },
+        lsp = { 'ty', 'basedpyright' },
         filetypes = { 'python' },
         treesitter = { 'python' },
     },
-    -- sqls (Go) often fails to build/install via Mason. Prefer sqlls first; sqls remains fallback.
     sql = {
-        lsp = { 'sqlls', 'sqls' },
-        formatters = { 'sql_formatter' },
+        lsp = { 'sqls', 'sqlls' },
         filetypes = { 'sql', 'mysql', 'plsql' },
         treesitter = { 'sql' },
     },
