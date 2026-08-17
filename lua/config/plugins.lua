@@ -142,16 +142,18 @@ require('nvim-treesitter.configs').setup({
 -- Completion + snippets (blink.cmp)
 ------------------------------------------------------------
 require('blink.cmp').setup({
-    keymap = { preset = 'default' },
+    keymap = {
+        preset = 'super-tab',
+        ['<CR>'] = { 'accept', 'fallback' },
+    },
     appearance = { nerd_font_variant = 'mono' },
     completion = {
         documentation = { auto_show = true, auto_show_delay_ms = 200 },
         list = { selection = { preselect = true, auto_insert = false } },
     },
     sources = {
-        default = { 'lsp', 'path', 'snippets', 'buffer' },
+        default = { 'lsp', 'path', 'buffer' },
     },
-    snippets = { preset = 'default' },
     signature = { enabled = true },
 })
 
@@ -160,7 +162,7 @@ require('blink.cmp').setup({
 ------------------------------------------------------------
 require('lualine').setup({
     options = {
-        theme = 'onenord',
+        theme = 'nordern',
         globalstatus = true,
         section_separators = '',
         component_separators = '',

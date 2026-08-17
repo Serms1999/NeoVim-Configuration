@@ -1,13 +1,9 @@
 -- Central language registry.
 -- Each entry maps a logical language name to:
---   lsp        : ordered list of LSP candidates (first available in mason wins)
---   formatters : list of formatters consumed by conform.nvim and mason-tool-installer
---   linters    : list of linters consumed by nvim-lint and mason-tool-installer
---   filetypes  : Neovim filetypes that map to this language (used by conform/lint)
+--   lsp        : ordered list of LSP candidates (first available on PATH wins)
+--   filetypes  : Neovim filetypes that map to this language
 --   treesitter : list of tree-sitter parsers to ensure installed
 --
--- To swap LSPs (e.g. switch from pyright to basedpyright), reorder the lsp list.
--- The rest of the configuration does not need to change.
 return {
     bash = {
         lsp = { 'bashls' },
