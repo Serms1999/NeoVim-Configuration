@@ -53,6 +53,11 @@ return {
         filetypes = { 'lua' },
         treesitter = { 'lua', 'luadoc' },
     },
+    markdown = {
+        lsp = {},
+        filetypes = { 'markdown' },
+        treesitter = { 'markdown', 'markdown_inline' },
+    },
     python = {
         lsp = { 'ty', 'basedpyright' },
         filetypes = { 'python' },
