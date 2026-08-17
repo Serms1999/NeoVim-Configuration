@@ -11,20 +11,16 @@
 return {
     bash = {
         lsp = { 'bashls' },
-        formatters = { 'shfmt' },
-        linters = { 'shellcheck' },
         filetypes = { 'sh', 'bash' },
         treesitter = { 'bash' },
     },
     c = {
         lsp = { 'clangd' },
-        formatters = { 'clang_format' },
         filetypes = { 'c' },
         treesitter = { 'c' },
     },
     cpp = {
         lsp = { 'clangd' },
-        formatters = { 'clang_format' },
         filetypes = { 'cpp' },
         treesitter = { 'cpp' },
     },
@@ -35,7 +31,6 @@ return {
     },
     docker = {
         lsp = { 'dockerls' },
-        linters = { 'hadolint' },
         filetypes = { 'dockerfile' },
         treesitter = { 'dockerfile' },
     },
@@ -59,21 +54,16 @@ return {
     },
     lua = {
         lsp = { 'lua_ls' },
-        formatters = { 'stylua' },
         filetypes = { 'lua' },
         treesitter = { 'lua', 'luadoc' },
     },
     python = {
-        lsp = { 'basedpyright', 'pyright', 'pylsp' },
-        formatters = { 'ruff_format', 'black' },
-        linters = { 'ruff' },
+        lsp = { 'ty', 'basedpyright' },
         filetypes = { 'python' },
         treesitter = { 'python' },
     },
-    -- sqls (Go) often fails to build/install via Mason. Prefer sqlls first; sqls remains fallback.
     sql = {
-        lsp = { 'sqlls', 'sqls' },
-        formatters = { 'sql_formatter' },
+        lsp = { 'sqls', 'sqlls' },
         filetypes = { 'sql', 'mysql', 'plsql' },
         treesitter = { 'sql' },
     },

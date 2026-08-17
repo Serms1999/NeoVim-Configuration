@@ -5,6 +5,7 @@
 vim.pack.add({
     -- Colorscheme
     { src = 'https://github.com/rmehri01/onenord.nvim' },
+    { src = 'https://github.com/fcancelinha/nordern.nvim' },
 
     -- Icons
     { src = 'https://github.com/nvim-tree/nvim-web-devicons' },
@@ -12,18 +13,7 @@ vim.pack.add({
     -- File explorer
     { src = 'https://github.com/nvim-tree/nvim-tree.lua' },
 
-    -- LSP pipeline
-    { src = 'https://github.com/neovim/nvim-lspconfig' },
-    { src = 'https://github.com/mason-org/mason.nvim' },
-    { src = 'https://github.com/mason-org/mason-lspconfig.nvim' },
-    { src = 'https://github.com/WhoIsSethDaniel/mason-tool-installer.nvim' },
-
-    -- Format / Lint
-    { src = 'https://github.com/stevearc/conform.nvim' },
-    { src = 'https://github.com/mfussenegger/nvim-lint' },
-
-    -- Completion + snippets
-    { src = 'https://github.com/L3MON4D3/LuaSnip' },
+    -- Completion
     { src = 'https://github.com/saghen/blink.cmp', version = vim.version.range('1.0') },
 
     -- Treesitter (stable master branch: ships pre-built parsers, no extra CLI required).
@@ -37,37 +27,48 @@ vim.pack.add({
 
     -- UI / DX
     { src = 'https://github.com/nvim-lualine/lualine.nvim' },
-    { src = 'https://github.com/lewis6991/gitsigns.nvim' },
-    { src = 'https://github.com/folke/which-key.nvim' },
-    { src = 'https://github.com/lukas-reineke/indent-blankline.nvim' },
     { src = 'https://github.com/windwp/nvim-autopairs' },
-    { src = 'https://github.com/numToStr/Comment.nvim' },
 })
 
 ------------------------------------------------------------
 -- Colorscheme
 ------------------------------------------------------------
-require('onenord').setup({
-    theme = nil,
-    borders = true,
-    fade_nc = false,
-    styles = {
-        comments = 'NONE',
-        strings = 'NONE',
-        keywords = 'NONE',
-        functions = 'NONE',
-        variables = 'NONE',
-        diagnostics = 'underline',
-    },
-    disable = {
-        background = true,
-        cursorline = false,
-        eob_lines = true,
-    },
-    inverse = { match_paren = false },
-    custom_highlights = {},
-    custom_colors = {},
+
+require('nordern').setup({
+    transparent = true,
+    italic_comments = false,
 })
+vim.cmd.colorscheme('nordern')
+
+-- Overrides Aurora
+local set = vim.api.nvim_set_hl
+set(0, '@keyword.sql',      { fg = '#B48EAD' })
+set(0, '@type.sql',         { fg = '#EBCB8B' })
+set(0, '@keyword.python',   { fg = '#B48EAD' })
+set(0, '@function.python',  { fg = '#A3BE8C' })
+
+-- require('onenord').setup({
+--     theme = nil,
+--     borders = true,
+--     fade_nc = false,
+--     styles = {
+--         comments = 'NONE',
+--         strings = 'NONE',
+--         keywords = 'NONE',
+--         functions = 'NONE',
+--         variables = 'NONE',
+--         diagnostics = 'underline',
+--     },
+--     disable = {
+--         background = true,
+--         cursorline = false,
+--         eob_lines = true,
+--     },
+--     inverse = { match_paren = false },
+--     custom_highlights = {},
+--     custom_colors = {},
+-- })
+-- vim.cmd.colorscheme('onenord')
 
 ------------------------------------------------------------
 -- File explorer
@@ -150,7 +151,7 @@ require('blink.cmp').setup({
     sources = {
         default = { 'lsp', 'path', 'snippets', 'buffer' },
     },
-    snippets = { preset = 'luasnip' },
+    snippets = { preset = 'default' },
     signature = { enabled = true },
 })
 
@@ -170,25 +171,6 @@ require('lualine').setup({
     },
 })
 
-require('gitsigns').setup({
-    signs = {
-        add          = { text = '+' },
-        change       = { text = '~' },
-        delete       = { text = '_' },
-        topdelete    = { text = '‾' },
-        changedelete = { text = '~' },
-    },
-})
-
-require('which-key').setup({})
-
-require('ibl').setup({
-    indent = { char = '│' },
-    scope = { enabled = true },
-})
-
 require('nvim-autopairs').setup({})
 
-require('Comment').setup({})
-
-require('fzf-lua').setup({ 'default' })
+require('fzf-lua').setup({})
